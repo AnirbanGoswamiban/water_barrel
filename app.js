@@ -44,7 +44,6 @@ app.post("/webhook",
         }catch(err){}
       }
     }
-    console.log("processed")
     res.status(200).send("OK");
   }
 );

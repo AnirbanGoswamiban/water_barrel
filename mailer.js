@@ -1,27 +1,18 @@
-const nodemailer = require("nodemailer");
-const ejs = require("ejs");
+const { Resend } = require('resend')
+const ejs = require("ejs"); 
 const path = require("path");
 
-async function sendMail(to, data) {
-const transporter = nodemailer.createTransport({
-    service:"gmail",
-    auth: {
-    user: process.env.MAIL,
-    pass: process.env.EMAIL_PASS,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-  const templatePath = path.join(__dirname, "views", "success.ejs");
+export async function sendMail(to, data) {
+  const templatePath = path.join(process.cwd(), "views", "success.ejs");
 
   const html = await ejs.renderFile(templatePath, data);
 
-  const mailOptions = {
-    from: process.env.MAIL,
+  await resend.emails.send({
+    from: "onboarding@resend.dev",
     to: to,
     subject: "Payment Successful",
     html: html
-  };
-
-  await transporter.sendMail(mailOptions);
+  });
 }
-module.exports = {sendMail};
