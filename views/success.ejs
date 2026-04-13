@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    body {
+      font-family: Arial;
+      background: #f4f4f4;
+      padding: 20px;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      margin: auto;
+      text-align: center;
+    }
+    h2 {
+      color: #28a745;
+    }
+    p {
+      color: #555;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Payment Successful </h2>
+
+  <p>Hi <%= name %>,</p>
+
+  <p>Your payment was successful.</p>
+
+  <p><strong>Amount:</strong> ₹<%= amount %></p>
+  <p><strong>Payment ID:</strong> <%= payment_id %></p>
+
+  <p>Thank you for your purchase </p>
+</div>
+
+</body>
+</html>
