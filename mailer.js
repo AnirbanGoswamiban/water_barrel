@@ -3,13 +3,16 @@ const ejs = require("ejs");
 const path = require("path");
 
 async function sendMail(to, data) {
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.MAIL,
-      pass: process.env.MAIL_PASS
-    }
-  });
+const transporter = nodemailer.createTransport({
+  host: "smtp.gmail.com",
+  port: 465,
+  secure: true,
+  family: 4,
+  auth: {
+    user: process.env.MAIL,
+    pass: process.env.MAIL_PASS,
+  },
+});
 
   const templatePath = path.join(__dirname, "views", "success.ejs");
 

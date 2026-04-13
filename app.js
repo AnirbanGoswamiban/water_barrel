@@ -35,15 +35,16 @@ app.post("/webhook",
           "UPDATE orders SET status='PAID', razorpay_payment_id=$1 WHERE id=$2",
           [payment.id, order.id]
         );
-
-        await sendMail(order.email, {
+        try{
+          sendMail(order.email, {
           name: order.name,
           amount: order.amount,
           payment_id: payment.id
         });
+        }catch(err){}
       }
     }
-
+    console.log("processed")
     res.status(200).send("OK");
   }
 );
