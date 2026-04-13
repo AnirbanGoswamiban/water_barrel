@@ -4,13 +4,10 @@ const path = require("path");
 
 async function sendMail(to, data) {
 const transporter = nodemailer.createTransport({
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  family: 4,
-  auth: {
+    service:"gmail",
+    auth: {
     user: process.env.MAIL,
-    pass: process.env.MAIL_PASS,
+    pass: process.env.EMAIL_PASS,
   },
 });
 
