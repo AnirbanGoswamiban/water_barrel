@@ -1,8 +1,9 @@
+const { Resend } = require("resend");
 const ejs = require("ejs");
 const path = require("path");
-const { Resend } = require("resend");
+// require('dotenv').config()
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESENDAPIKEY);
 
 async function sendMail(to, data) {
   try {
@@ -22,5 +23,7 @@ async function sendMail(to, data) {
     console.error("EMAIL ERROR:", err);
   }
 }
+
+// sendMail("anirbangoswami323@gmail.com",{name:"",amount:"",payment_id:"",})
 
 module.exports = { sendMail };
