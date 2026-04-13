@@ -2,7 +2,7 @@ const { Resend } = require('resend')
 const ejs = require("ejs"); 
 const path = require("path");
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESENDAPIKEY);
 
 export async function sendMail(to, data) {
   const templatePath = path.join(process.cwd(), "views", "success.ejs");
