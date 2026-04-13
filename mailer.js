@@ -1,6 +1,7 @@
-const { Resend } = require('resend')
 const ejs = require("ejs"); 
 const path = require("path");
+
+const {Resend} = require('resend')
 
 const resend = new Resend(process.env.RESENDAPIKEY);
 
