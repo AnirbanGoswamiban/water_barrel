@@ -1,6 +1,7 @@
 const express = require("express");
 const Razorpay = require("razorpay");
 const {sendMail} = require('./mailer')
+const crypto = require("crypto");
 const app = express();
 const {Pool}=require("pg")
 const dotenv = require('dotenv')
@@ -105,9 +106,6 @@ app.post("/create-order", async (req, res) => {
     res.send("Error");
   }
 });
-
-const crypto = require("crypto");
-const sendMail = require("./sendMail");
 
 app.post("/webhook",
   express.raw({ type: "*/*" }),
