@@ -8,6 +8,46 @@ const dotenv = require('dotenv')
 
 
 dotenv.config()
+
+app.post("/webhook",
+  express.raw({ type: "*/*" }),
+  async (req, res) => {
+    const secret = process.env.YOUR_WEBHOOK_SECRET;
+
+    const shasum = crypto.createHmac("sha256", secret);
+    shasum.update(req.body);
+    const digest = shasum.digest("hex");
+
+    if (digest === req.headers["x-razorpay-signature"]) {
+      const body = JSON.parse(req.body.toString());
+
+      const payment = body.payload.payment.entity;
+
+      const result = await pool.query(
+        "SELECT * FROM orders WHERE razorpay_order_id=$1",
+        [payment.order_id]
+      );
+
+      const order = result.rows[0];
+
+      if (order) {
+        await pool.query(
+          "UPDATE orders SET status='PAID', razorpay_payment_id=$1 WHERE id=$2",
+          [payment.id, order.id]
+        );
+
+        await sendMail(order.email, {
+          name: order.name,
+          amount: order.amount,
+          payment_id: payment.id
+        });
+      }
+    }
+
+    res.status(200).send("OK");
+  }
+);
+
 app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -106,48 +146,6 @@ app.post("/create-order", async (req, res) => {
     res.send("Error");
   }
 });
-
-app.post("/webhook",
-  express.raw({ type: "*/*" }),
-  async (req, res) => {
-
-    console.log("good till here")
-
-    const secret = process.env.YOUR_WEBHOOK_SECRET;
-
-    const shasum = crypto.createHmac("sha256", secret);
-    shasum.update(req.body);
-    const digest = shasum.digest("hex");
-
-    if (digest === req.headers["x-razorpay-signature"]) {
-      const body = JSON.parse(req.body.toString());
-
-      const payment = body.payload.payment.entity;
-
-      const result = await pool.query(
-        "SELECT * FROM orders WHERE razorpay_order_id=$1",
-        [payment.order_id]
-      );
-
-      const order = result.rows[0];
-
-      if (order) {
-        await pool.query(
-          "UPDATE orders SET status='PAID', razorpay_payment_id=$1 WHERE id=$2",
-          [payment.id, order.id]
-        );
-
-        await sendMail(order.email, {
-          name: order.name,
-          amount: order.amount,
-          payment_id: payment.id
-        });
-      }
-    }
-
-    res.status(200).send("OK");
-  }
-);
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
