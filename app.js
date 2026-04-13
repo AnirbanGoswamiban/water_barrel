@@ -110,6 +110,9 @@ app.post("/create-order", async (req, res) => {
 app.post("/webhook",
   express.raw({ type: "*/*" }),
   async (req, res) => {
+
+    console.log("good till here")
+
     const secret = process.env.YOUR_WEBHOOK_SECRET;
 
     const shasum = crypto.createHmac("sha256", secret);
