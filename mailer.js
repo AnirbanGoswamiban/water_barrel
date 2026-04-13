@@ -1,19 +1,26 @@
-const ejs = require("ejs"); 
+const ejs = require("ejs");
 const path = require("path");
+const { Resend } = require("resend");
 
-import { Resend } from "resend";
+const resend = new Resend(process.env.RESEND_API_KEY);
 
-const resend = new Resend(process.env.RESENDAPIKEY);
+async function sendMail(to, data) {
+  try {
+    const templatePath = path.join(process.cwd(), "views", "success.ejs");
 
-export async function sendMail(to, data) {
-  const templatePath = path.join(process.cwd(), "views", "success.ejs");
+    const html = await ejs.renderFile(templatePath, data);
 
-  const html = await ejs.renderFile(templatePath, data);
+    await resend.emails.send({
+      from: "onboarding@resend.dev",
+      to: to,
+      subject: "Payment Successful",
+      html: html
+    });
 
-  await resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: to,
-    subject: "Payment Successful",
-    html: html
-  });
+    console.log("EMAIL SENT");
+  } catch (err) {
+    console.error("EMAIL ERROR:", err);
+  }
 }
+
+module.exports = { sendMail };
